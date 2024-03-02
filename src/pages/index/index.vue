@@ -1,23 +1,13 @@
 <template>
   <view class="content">
     <image class="logo" src="/static/logo.png"></image>
-    <view class="text-area">
-      <text class="title">{{ title }}</text>
-    </view>
+    <view class="text-area"> 测试 </view>
     <div class="test"></div>
   </view>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      title: "Hello",
-    };
-  },
-  onLoad() {},
-  methods: {},
-};
+<script setup>
+import request from "@/services/index";
 </script>
 
 <style lang="scss" scoped>
