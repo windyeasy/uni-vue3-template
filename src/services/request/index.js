@@ -1,15 +1,20 @@
 
 
 class WdRequest {
+  /**
+    * 添加构造配置
+    * @constructor 
+    * @param {object} config       
+    * @param {string} config.baseUrl            - 请求的公共url地址
+    * @param {number} config.timeout            - 请求超时时间
+    * @param {object} config.interceptor          - 请求拦截器
+    * @param {?function} config.interceptor.requestSuccessFn  - 请求成功拦截器
+    * @param {?function} config.interceptor.responseSuccessFn - 响应成功拦截器
+    * @returns 
+    */
   constructor(config) {
     this.config = config
   }
-
-  /**
-   * 
-   * @param {object} config 
-   * @returns 
-   */
   request(config) {
     return new Promise((reslove, reject) => {
       config.url = this.config.baseUrl + config.url
@@ -37,3 +42,4 @@ class WdRequest {
   }
 }
 export default WdRequest
+const request = new WdRequest({ baseUrl, timeout })
