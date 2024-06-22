@@ -1,13 +1,12 @@
 <template>
   <view class="content">
-    <image class="logo" src="/static/logo.png"></image>
     <view class="text-area"> 测试 </view>
     <div class="test"></div>
   </view>
 </template>
 
 <script setup>
-import request from "@/services/index";
+
 </script>
 
 <style lang="scss" scoped>
