@@ -24,7 +24,6 @@ class WdRequest {
   }
 
   request(config) {
-  
     return new Promise((resolve, reject) => {
       config.url = this._fetchUrl(config.url);
 
@@ -46,26 +45,30 @@ class WdRequest {
           config.url += `?${queryStr}`;
         }
       }
-      
+
       uni.request({
         timeout: this.config.timeout, // 延迟时间
         dataType: "json",
         url: config.url,
         ...config,
         success: (res) => {
-          // 有可能在执行的过程出现异常后抛出异常
-          try {
-            // 实现全局响应拦截
-            if (this.config?.interceptor?.responseSuccessFn) {
-              res = this.config.interceptor.responseSuccessFn(res);
+          if ((res && res.statusCode < 200) || res.statusCode > 300) {
+            reject(res);
+          } else {
+            // 有可能在执行的过程出现异常后抛出异常
+            try {
+              // 实现全局响应拦截
+              if (this.config?.interceptor?.responseSuccessFn) {
+                res = this.config.interceptor.responseSuccessFn(res);
+              }
+              // 实现局部响应拦截
+              if (config?.interceptor?.responseSuccessFn) {
+                res = config.interceptor.responseSuccessFn(res);
+              }
+              resolve(res);
+            } catch (error) {
+              reject(error);
             }
-            // 实现局部响应拦截
-            if (config?.interceptor?.responseSuccessFn) {
-              res = config.interceptor.responseSuccessFn(res);
-            }
-            resolve(res);
-          } catch (error) {
-            reject(error);
           }
         },
         fail: (error) => {
@@ -144,16 +147,24 @@ class WdRequest {
       uni.uploadFile({
         ...config,
         success: (res) => {
-          res.data = JSON.parse(res.data);
-          // 实现全局响应拦截
-          if (this.config?.interceptor?.responseSuccessFn) {
-            res = this.config.interceptor.responseSuccessFn(res);
+          if ((res && res.statusCode < 200) || res.statusCode > 300) {
+            reject(res);
+          } else {
+            try {
+              res.data = JSON.parse(res.data);
+              // 实现全局响应拦截
+              if (this.config?.interceptor?.responseSuccessFn) {
+                res = this.config.interceptor.responseSuccessFn(res);
+              }
+              // 实现局部响应拦截
+              if (config?.interceptor?.responseSuccessFn) {
+                res = config.interceptor.responseSuccessFn(res);
+              }
+              resolve(res);
+            } catch (error) {
+              reject(error);
+            }
           }
-          // 实现局部响应拦截
-          if (config?.interceptor?.responseSuccessFn) {
-            res = config.interceptor.responseSuccessFn(res);
-          }
-          resolve(res);
         },
         fail: (error) => {
           if (this.config?.interceptor?.responseErrorFn) {
